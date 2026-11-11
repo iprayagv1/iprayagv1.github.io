@@ -1,0 +1,13 @@
+Images for the sanas-onboarding case study.
+Save each file here with EXACTLY this name. The page swaps the placeholder for the image automatically.
+Logos go in the logos/ subfolder. PNG export at 2x from Figma works best.
+
+[ ] cover.png
+[ ] journey-map.png
+[ ] ecosystem.png
+[ ] setup-entry.png
+[ ] setup-steps.png
+[ ] activation-mode.png
+[ ] whitelisting.png
+[ ] deployment.png
+[ ] dashboard.png

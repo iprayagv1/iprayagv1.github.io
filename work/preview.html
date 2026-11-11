@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script>document.documentElement.classList.add("js")</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gilda+Display&family=Marcellus&display=swap">
+  <link rel="stylesheet" href="../styles.css?v=8">
+  <link rel="stylesheet" href="case.css?v=9">
+  <style>a { pointer-events: none; } .to-top { display: none !important; }</style>
+</head>
+<body>
+  <!-- Used only by /admin to show a live preview of a case study while you edit it -->
+  <header class="nav" id="top">
+    <div class="nav__inner">
+      <a class="nav__logo" href="#">PG</a>
+      <nav class="nav__links" aria-label="Primary"><a href="#">Home</a><a href="#" class="is-active">Works</a><a href="#">Contact</a></nav>
+      <button class="nav__toggle" aria-expanded="false" aria-label="Open menu">
+        <img class="icon-open" src="../assets/icons/hamburger.svg" alt="" width="24" height="24">
+        <img class="icon-close" src="../assets/icons/close.svg" alt="" width="24" height="24">
+      </button>
+    </div>
+  </header>
+  <main id="case"></main>
+  <footer class="footer">
+    <div class="footer__glow" aria-hidden="true"></div>
+    <p class="footer__love">made with love by</p>
+    <p class="footer__name">Prayag Gangadharan</p>
+    <p class="footer__version">version 1.9</p>
+  </footer>
+  <script>
+    // Renders the case study the admin sends, and again on every change.
+    window.addEventListener('message', e => {
+      if (e.source !== window.parent || !e.data || e.data.type !== 'pg-preview') return;
+      const d = e.data;
+      const y = window.scrollY;
+      window.CASE = d.case; window.SITE = d.site; window.PREVIEW_FILES = d.files || {};
+      const s = document.createElement('script');
+      s.src = 'case.js?v=12&t=' + Date.now();
+      s.onload = () => {
+        s.remove();
+        document.querySelectorAll('.reveal').forEach(el => el.classList.add('is-visible'));
+        document.querySelectorAll('.prob').forEach(el => el.classList.add('in'));
+        const el = d.scrollTo && document.getElementById(d.scrollTo);
+        window.scrollTo(0, el ? el.getBoundingClientRect().top + window.scrollY - 140 : y);
+        parent.postMessage({ type: 'pg-preview-ready' }, '*');
+      };
+      document.body.appendChild(s);
+    });
+    parent.postMessage({ type: 'pg-preview-ready', first: true }, '*');
+  </script>
+</body>
+</html>

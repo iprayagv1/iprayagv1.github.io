@@ -1,0 +1,14 @@
+Images for the enphase-reconnection case study.
+Save each file here with EXACTLY this name. The page swaps the placeholder for the image automatically.
+Logos go in the logos/ subfolder. PNG export at 2x from Figma works best.
+
+[ ] cover.png
+[ ] current-experience.png
+[ ] benchmark.png
+[ ] journey.png
+[ ] iterations.png
+[ ] final-steps.png
+[ ] final-journey.png
+[ ] logos/alexa.png
+[ ] logos/ezycam.png
+[ ] logos/smart-life.png

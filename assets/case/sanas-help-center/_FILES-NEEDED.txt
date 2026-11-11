@@ -1,0 +1,16 @@
+Images for the sanas-help-center case study.
+Save each file here with EXACTLY this name. The page swaps the placeholder for the image automatically.
+Logos go in the logos/ subfolder. PNG export at 2x from Figma works best.
+
+[ ] cover.png
+[ ] ux-audit.png
+[ ] benchmark.png
+[ ] ia.png
+[ ] wireframes.png
+[ ] final-home.png
+[ ] final-faq.png
+[ ] final-category.png
+[ ] impact-dashboard.png
+[ ] logos/krisp.png
+[ ] logos/iris-clarity.png
+[ ] logos/tomato-ai.png
