@@ -1,5 +1,7 @@
 // Each feature is set up independently so one failing never stops the others.
 function safe(fn) { try { fn(); } catch (e) { console.error(e); } }
+// Site root, worked out from where this script lives (works for / and /work/ pages)
+const SITE_ROOT = (document.currentScript && document.currentScript.src || '').replace(/script\.js(\?.*)?$/, '');
 const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ---------- Mobile menu ----------
@@ -159,3 +161,19 @@ safe(() => {
     if (target) target.focus({ preventScroll: true }); // keep keyboard users at the top too
   });
 });
+
+// ---------- Reviewer notes button above the footer on every page ----------
+// The home page has it in the contact section; other pages get the same button
+// in the same spot, so the footer looks the same everywhere.
+document.addEventListener('DOMContentLoaded', () => safe(() => {
+  const footer = document.querySelector('.footer');
+  if (!footer || document.querySelector('.reviewer') || document.body.dataset.noReviewer !== undefined) return;
+  const form = ((window.SITE || {}).contact || {}).reviewerForm || 'https://forms.gle/E69Ri9PVbm77tHif6';
+  const dock = document.createElement('div');
+  dock.className = 'reviewer-dock';
+  dock.innerHTML =
+    `<a class="reviewer" href="${form.replace(/"/g, '&quot;')}" target="_blank" rel="noopener" aria-label="Leave reviewer notes">` +
+    `<img class="reviewer__ring" src="${SITE_ROOT}assets/icons/reviewer-notes.svg" alt="">` +
+    `<img class="reviewer__star" src="${SITE_ROOT}assets/icons/asterisk-badge.svg" alt=""></a>`;
+  footer.before(dock);
+}));

@@ -435,6 +435,10 @@ h1, h2, h3, p { margin: 0; font-weight: 400; }
 }
 .reviewer:hover .reviewer__ring { animation-duration: 5s; }
 
+/* Reviewer button on pages without the contact section (case studies) */
+.reviewer-dock { position: relative; z-index: 3; max-width: var(--max); margin: 0 auto; height: 0; }
+.reviewer-dock .reviewer { top: -30px; }
+
 /* ---------- Footer ---------- */
 .footer {
   position: relative; z-index: 1;
@@ -568,6 +572,8 @@ h1, h2, h3, p { margin: 0; font-weight: 400; }
     background: rgba(243,243,243,.04); border-color: rgba(243,243,243,.1); color: var(--text); }
   .social { width: 50px; height: 50px; }
   .reviewer { position: relative; left: auto; right: auto; top: auto; margin: 48px auto 0; width: 120px; height: 120px; }
+  .reviewer-dock { height: auto; padding: 24px 0 60px; }
+  .reviewer-dock .reviewer { top: auto; margin-top: 0; }
   .footer { padding-top: 120px; }
   .footer__glow { width: 180vw; height: 520px; bottom: -260px; }
   .reviewer__star { width: 30px; }
