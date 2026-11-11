@@ -301,10 +301,15 @@
   const GC = {
     code: () => ((Drafts.read().site || App.data.site).analytics || {}).goatcounter || '',
     key: () => localStorage.getItem(KEY) || '',
-    async get(path, params = {}) {
+    async get(path, params = {}, tries = 3) {
       const q = new URLSearchParams(params).toString();
-      const res = await fetch(`https://${GC.code()}.goatcounter.com/api/v0${path}${q ? '?' + q : ''}`, { headers: { Authorization: 'Bearer ' + GC.key(), 'Content-Type': 'application/json' }, cache: 'no-store' })
-        .catch(() => { throw new Error('Can’t reach GoatCounter.'); });
+      let res;
+      try {
+        res = await fetch(`https://${GC.code()}.goatcounter.com/api/v0${path}${q ? '?' + q : ''}`, { headers: { Authorization: 'Bearer ' + GC.key(), 'Content-Type': 'application/json' }, cache: 'no-store' });
+      } catch (e) { res = null; }
+      // GoatCounter limits how fast it answers; a refused request looks like a network error. Wait and retry.
+      if ((!res || res.status === 429) && tries > 1) { await new Promise(r => setTimeout(r, (4 - tries) * 1500)); return GC.get(path, params, tries - 1); }
+      if (!res) throw new Error(`Can’t reach GoatCounter (${path}). If you use an ad blocker, allow goatcounter.com on this page.`);
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(res.status === 401 || res.status === 403 ? 'GoatCounter didn’t accept the API key.' : `${data.error || data.errors && JSON.stringify(data.errors) || res.statusText} (${res.status} on ${path})`);
       return data;
@@ -370,11 +375,14 @@
       an.innerHTML = `<div class="stats">${[1, 2, 3, 4].map(() => '<div class="card stat"><span class="label skeleton">Loading</span><strong class="skeleton">00</strong><small class="skeleton">loading</small></div>').join('')}</div>`;
       const r = GC.range(Analytics.days);
       try {
-        const [total, hits, refs, sizes, locs] = await Promise.all([
-          GC.get('/stats/total', r), GC.get('/stats/hits', Object.assign({ limit: 100 }, r)),
-          GC.get('/stats/toprefs', Object.assign({ limit: 8 }, r)), GC.get('/stats/sizes', r), GC.get('/stats/locations', Object.assign({ limit: 8 }, r)),
-        ]);
-        Analytics.draw({ total, hits: hits.hits || [], refs: refs.stats || [], sizes: sizes.stats || [], locs: locs.stats || [] });
+        // One request at a time; the extras (sources, devices, countries) are optional
+        const total = await GC.get('/stats/total', r);
+        const hits = await GC.get('/stats/hits', Object.assign({ limit: 100 }, r));
+        const opt = async (p, x) => { try { return (await GC.get(p, Object.assign({}, x, r))).stats || []; } catch (e) { console.warn(e); return []; } };
+        const refs = await opt('/stats/toprefs', { limit: 8 });
+        const sizes = await opt('/stats/sizes', {});
+        const locs = await opt('/stats/locations', { limit: 8 });
+        Analytics.draw({ total, hits: hits.hits || [], refs, sizes, locs });
       } catch (e) {
         an.innerHTML = `<div class="banner banner--bad">${ic('warn')}<span>${esc(e.message)}</span><span class="right"><a href="#" id="gc-reset">Reconnect</a></span></div>`;
         $('#gc-reset').onclick = ev => { ev.preventDefault(); localStorage.removeItem(KEY); App.route(); };
