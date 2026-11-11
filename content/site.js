@@ -223,7 +223,7 @@ window.SITE = {
   },
   "footer": {
     "name": "Prayag Gangadharan",
-    "version": "version 1.9"
+    "version": "version 2.0"
   },
   "analytics": {
     "goatcounter": ""
