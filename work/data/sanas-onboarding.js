@@ -277,5 +277,6 @@ window.CASE = {
         "body": "Users still leaned on support because Help Center content was hard to find. This was identified during ideation and planned for the next sprint — it became the [Help Center redesign](sanas-help-center.html)."
       }
     ]
-  }
+  },
+  "confidential": true
 };
