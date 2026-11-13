@@ -14,10 +14,10 @@ window.CASE = {
     "teamLabel": "Scope",
     "team": "Admin Portal onboarding"
   },
-  "confidential": true,
   "snapshot": {
     "problem": "Only **9%** of users who signed up reached a successful app activation. Setup was confusing and technical, so adoption of the core feature stayed low.",
     "did": "Replaced the fragmented onboarding with a progressive, guided **4-step setup** with progress tracking, plain-language activation choices and a smooth install path.",
     "outcome": "Activation success rose from **58% to 85%**, total users grew **65%** and onboarding support tickets fell **40%**."
-  }
+  },
+  "confidential": true
 };
