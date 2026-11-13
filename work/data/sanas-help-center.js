@@ -14,5 +14,10 @@ window.CASE = {
     "teamLabel": "Product",
     "team": "Sanas Help Center"
   },
-  "confidential": true
+  "confidential": true,
+  "snapshot": {
+    "problem": "Users couldn’t find answers to basic setup and usage questions, so they kept raising support tickets — slowing setup and weakening feature adoption.",
+    "did": "Analysed tickets, audited the old Help Center, benchmarked competitors, then rebuilt the **information architecture**, search-first home, FAQs and category pages.",
+    "outcome": "In the first 2 months: **19k+ article views**, **49% read-through rate**, and **30% fewer basic FAQ tickets**."
+  }
 };

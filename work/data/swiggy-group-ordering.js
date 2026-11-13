@@ -14,5 +14,11 @@ window.CASE = {
     "teamLabel": "Type",
     "team": "Concept case study"
   },
-  "confidential": true
+  "confidential": true,
+  "snapshot": {
+    "problem": "Swiggy’s cart handles one restaurant at a time, so groups ordering from several places face multiple orders, delivery fees and bill splits.",
+    "did": "Interviewed users about group orders, built personas, sorted features by priority and designed a **Group Cart** flow from discovery to payment.",
+    "outcomeLabel": "Goal",
+    "outcome": "Make ordering from **multiple restaurants together** feel as easy as ordering for one."
+  }
 };
