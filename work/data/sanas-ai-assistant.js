@@ -14,6 +14,6 @@ window.CASE = {
     "teamLabel": "Status",
     "team": "Under NDA"
   },
-  "confidential": true,
-  "lockedBg": "../assets/img/sanas-ai-assistant.webp"
+  "lockedBg": "../assets/img/sanas-ai-assistant.webp",
+  "confidential": true
 };
