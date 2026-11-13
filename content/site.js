@@ -218,8 +218,9 @@ window.SITE = {
     "linkedin": "https://www.linkedin.com/in/prayagv1/",
     "behance": "https://www.behance.net/prayagv1",
     "instagram": "https://www.instagram.com/prayagv1/",
-    "resume": "assets/Prayag-Gangadharan-Resume.pdf",
-    "reviewerForm": "https://forms.gle/E69Ri9PVbm77tHif6"
+    "resume": "",
+    "reviewerForm": "https://forms.gle/E69Ri9PVbm77tHif6",
+    "resumeRequestApi": "https://script.google.com/macros/s/AKfycbykXsipZAmssldu_5tDGItxw8RT_X1U-YZVSDYk45cmiHhoY4KkyA-YwJsRNDIScGTl/exec"
   },
   "footer": {
     "name": "Prayag Gangadharan",
