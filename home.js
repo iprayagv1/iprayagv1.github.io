@@ -86,7 +86,12 @@
   link('.social[aria-label="LinkedIn"]', c.linkedin);
   link('.social[aria-label="Behance"]', c.behance);
   link('.social[aria-label="Instagram"]', c.instagram);
-  link('.contact__links .resume', c.resume);
+  const rb = $('.contact__links .resume');
+  if (rb && c.resumeRequestApi) {
+    // Resume on request: opens a popup instead of a public PDF (see resume-request.js)
+    rb.href = '#request-resume'; rb.removeAttribute('target'); rb.setAttribute('data-resume-request', ''); rb.setAttribute('aria-haspopup', 'dialog');
+    const js = document.createElement('script'); js.src = 'resume-request.js?v=1'; document.body.appendChild(js);
+  } else link('.contact__links .resume', c.resume);
   link('.reviewer', c.reviewerForm);
 
   // ---------- Footer ----------

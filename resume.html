@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Resume — Prayag Gangadharan</title>
+  <meta name="theme-color" content="#0b0b0b">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gilda+Display&family=Marcellus&display=swap">
+  <link rel="stylesheet" href="styles.css?v=10">
+</head>
+<body class="rq-page">
+  <!-- Private resume download. The link comes by email after Prayag approves a request. -->
+  <main class="rq-dl">
+    <a class="nav__logo" href="index.html" aria-label="Prayag Gangadharan, home">PG</a>
+    <div class="rq-dl__card" id="card" aria-live="polite">
+      <p class="rq__eyebrow">Resume</p>
+      <h1 class="rq__title">Getting your download ready…</h1>
+    </div>
+  </main>
+  <div class="footer__glow" aria-hidden="true"></div>
+
+  <script src="content/site.js"></script>
+  <script>
+  (async function () {
+    const card = document.getElementById('card');
+    const api = ((window.SITE || {}).contact || {}).resumeRequestApi;
+    const t = new URLSearchParams(location.search).get('t') || '';
+    const show = (title, text, extra = '') => { card.innerHTML = `<p class="rq__eyebrow">Resume</p><h1 class="rq__title">${title}</h1><p class="rq__lead">${text}</p>${extra}`; };
+    const again = '<button type="button" class="pill pill--light" onclick="location.href=\'index.html#contact\'">Request it again</button>';
+    if (!api || t.length < 20) return show('This link doesn’t work', 'Check that you opened the full link from the email.', again);
+    try {
+      const j = await fetch(api + '?action=file&t=' + encodeURIComponent(t)).then(r => r.json());
+      if (!j.ok) {
+        if (j.error === 'expired') return show('This link has expired', 'Download links work for a limited time. You can request the resume again and I’ll send a fresh link.', again);
+        if (j.error === 'limit') return show('Download limit reached', 'This link has been used the maximum number of times. Request again if you need another copy.', again);
+        return show('This link doesn’t work', 'It may have been replaced or withdrawn. You can request the resume again.', again);
+      }
+      const bytes = Uint8Array.from(atob(j.base64), c => c.charCodeAt(0));
+      const url = URL.createObjectURL(new Blob([bytes], { type: j.type || 'application/pdf' }));
+      const name = j.fileName || 'Prayag-Gangadharan-Resume.pdf';
+      show(`Hi ${j.name ? String(j.name).split(' ')[0].replace(/[<>&]/g, '') : 'there'}, here’s my resume`, 'Thanks for your interest. Your download should start now.',
+        `<div class="rq-dl__acts"><a class="pill pill--light" href="${url}" download="${name.replace(/"/g, '')}">Download resume</a><a class="pill" href="${url}" target="_blank" rel="noopener">Open in browser</a></div>`);
+      const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    } catch (e) { show('Couldn’t load the resume', 'Please try again in a moment.', '<button type="button" class="pill pill--light" onclick="location.reload()">Try again</button>'); }
+  })();
+  </script>
+</body>
+</html>

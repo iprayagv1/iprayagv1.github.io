@@ -599,3 +599,38 @@ h1, h2, h3, p { margin: 0; font-weight: 400; }
 .to-top__ring circle { fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; transition: stroke-dashoffset .15s linear; }
 @media (max-width: 640px) { .to-top { width: 48px; height: 48px; } }
 @media (prefers-reduced-motion: reduce) { .to-top, .to-top__arrow { transition: none; } }
+
+/* ---------- Resume request popup ---------- */
+.rq { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; padding: 20px; background: rgba(0,0,0,0); transition: background .25s var(--ease); }
+.rq.is-in { background: rgba(0,0,0,.7); }
+.rq__panel { position: relative; width: 100%; max-width: 520px; max-height: calc(100vh - 40px); overflow-y: auto; border-radius: 24px; background: #141414; border: 1px solid rgba(243,243,243,.14); box-shadow: 0 30px 80px rgba(0,0,0,.6); opacity: 0; transform: translateY(16px) scale(.98); transition: opacity .25s var(--ease), transform .25s var(--ease); }
+.rq.is-in .rq__panel { opacity: 1; transform: none; }
+.rq__body { padding: 40px; display: flex; flex-direction: column; gap: 14px; }
+.rq__close { position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(243,243,243,.18); background: none; color: var(--text); font-size: 22px; line-height: 1; cursor: pointer; }
+.rq__close:hover { border-color: rgba(243,243,243,.45); }
+.rq__eyebrow { margin: 0; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+.rq__title { margin: 0; font-family: var(--serif); font-weight: 400; font-size: 34px; line-height: 1.15; }
+.rq__lead { margin: 0; line-height: 1.6; color: rgba(243,243,243,.72); }
+.rq__lead b { font-weight: 400; color: var(--text); }
+.rq__form { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+.rq__field { display: flex; flex-direction: column; gap: 8px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: rgba(243,243,243,.6); }
+.rq__field em { font-style: normal; text-transform: none; letter-spacing: 0; color: rgba(243,243,243,.4); }
+.rq__field input, .rq__field textarea { font: inherit; font-size: 16px; letter-spacing: 0; text-transform: none; color: var(--text); background: #0e0e0e; border: 1px solid rgba(243,243,243,.2); border-radius: 12px; padding: 13px 14px; outline: none; transition: border-color .2s; resize: vertical; }
+.rq__field input:focus, .rq__field textarea:focus { border-color: var(--accent); }
+.rq__hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.rq__error { margin: 0; font-size: 14px; color: #ff7a7e; }
+.rq__send { align-self: flex-start; margin-top: 6px; height: 52px; padding: 0 28px; font-size: 16px; cursor: pointer; }
+.rq-dl__acts .pill { height: 52px; padding: 0 26px; font-size: 16px; }
+.rq__send[disabled] { opacity: .6; cursor: default; }
+.rq__small { margin: 0; font-size: 12px; color: rgba(243,243,243,.45); }
+.rq__done { width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-size: 26px; color: #111; background: var(--accent); }
+html.rq-open { overflow: hidden; }
+@media (max-width: 560px) { .rq { align-items: end; padding: 0; } .rq__panel { max-width: none; border-radius: 24px 24px 0 0; max-height: 92vh; } .rq__body { padding: 32px 22px 28px; } .rq__title { font-size: 28px; } }
+
+/* ---------- Private resume download page ---------- */
+.rq-page { min-height: 100vh; position: relative; overflow: hidden; }
+.rq-dl { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; padding: 40px 20px; position: relative; z-index: 1; }
+.rq-dl .nav__logo { position: absolute; top: 28px; left: 50%; transform: translateX(-50%); }
+.rq-dl__card { width: 100%; max-width: 560px; padding: 44px; border-radius: 28px; border: 1px solid rgba(243,243,243,.14); background: rgba(14,14,14,.75); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); display: flex; flex-direction: column; gap: 16px; text-align: center; align-items: center; }
+.rq-dl__acts { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+.rq-page .footer__glow { position: fixed; z-index: 0; }
