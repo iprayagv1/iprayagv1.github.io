@@ -301,5 +301,6 @@ window.CASE = {
         "body": "Keep tracking basic-ticket volume to spot where self-service still falls short."
       }
     ]
-  }
+  },
+  "confidential": true
 };
