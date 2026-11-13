@@ -6,6 +6,20 @@
   const clone = o => (o == null ? o : JSON.parse(JSON.stringify(o)));
   const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   const slugify = s => String(s || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60);
+  // ---------- Confidential case studies ----------
+  // Only these fields are published for a confidential page; chapters stay private.
+  const PUBLIC_KEYS = ['slug', 'short', 'client', 'logo', 'logoFile', 'eyebrow', 'title', 'summary', 'meta', 'confidential', 'lockedBg', 'lockedText'];
+  const CHAPTER_KEYS = ['cover', 'snapshot', 'context', 'process', 'research', 'problem', 'explorations', 'solution', 'impact', 'next', 'learnings'];
+  const hasChapters = c => !!c && CHAPTER_KEYS.some(k => k in c);
+  const publicCase = c => (c && c.confidential) ? Object.fromEntries(Object.entries(c).filter(([k]) => PUBLIC_KEYS.includes(k))) : c;
+  // A private copy of confidential chapters, kept only in this browser
+  const Vault = {
+    KEY: 'pg-admin-vault',
+    all() { try { return JSON.parse(localStorage.getItem(Vault.KEY)) || {}; } catch (e) { return {}; } },
+    get: slug => Vault.all()[slug] || null,
+    keep(slug, c) { if (!hasChapters(c)) return; const a = Vault.all(); a[slug] = Object.fromEntries(Object.entries(c).filter(([k]) => CHAPTER_KEYS.includes(k))); localStorage.setItem(Vault.KEY, JSON.stringify(a)); },
+    restore(slug, c) { const v = Vault.get(slug); if (!v) return false; let n = 0; for (const k in v) if (!(k in c)) { c[k] = v[k]; n++; } return n > 0; },
+  };
   const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 
   // Extra icons used here
@@ -540,7 +554,8 @@
       if (t.site) {
         el.innerHTML = title + `</div><p class="hint">How this case study appears on your home page.</p><div class="fgrid">${Form.render(t.schema, Editor.card, '', Editor.ctx())}</div>`;
       } else if (t.id === 'basics') {
-        el.innerHTML = title + `</div><div class="fgrid">${Form.render(t.schema, c, '', Editor.ctx())}</div>`;
+        const v = c.confidential && Vault.get(Editor.slug);
+        el.innerHTML = title + `</div>${c.confidential ? `<div class="banner banner--info">${ic('lock')}<span>Confidential: only this header and the locked card are published. ${v ? 'Your chapters are kept privately in this browser — untick Confidential to bring them back.' : hasChapters(c) ? 'Your chapters stay here but won’t be published.' : ''}</span></div>` : ''}<div class="fgrid">${Form.render(t.schema, c, '', Editor.ctx())}</div>`;
       } else if (!(t.id in c)) {
         el.innerHTML = title + `</div><div class="card soon" style="padding:28px"><p>This chapter isn’t on the page.</p><button type="button" class="btn btn--primary" data-act="addchapter">${ic('plus')}Add ${esc(t.name)}</button></div>`;
       } else {
@@ -574,6 +589,11 @@
         const v = Form.read(el, obj);
         setAt(obj, el.dataset.path, v);
         if (el.dataset.kind === 'role') { el.className = el.className.replace(/role-\w+/, 'role-' + (el.value || 'plain')); }
+        if (el.dataset.path === 'confidential') {
+          if (v) { Vault.keep(Editor.slug, obj); toast('Confidential — chapters won’t be published. A private copy stays in this browser.'); }
+          else if (Vault.restore(Editor.slug, obj)) toast('Your hidden chapters are back');
+          Editor.save(); setTimeout(() => App.route(), 400); return;
+        }
         if (el.dataset.rerender) Editor.form();
         if (el.dataset.path === 'explorations.name') { const tab = $('.chapters a.is-on span'); if (tab) tab.textContent = el.value || 'Explorations'; }
         Editor.save();
@@ -720,8 +740,18 @@
           out.push({ assetsOf: slug, note: `Images in assets/case/${slug}/`, kind: 'D', path: `assets/case/${slug}/…` });
         } else {
           const isNew = Store.isNew(slug);
-          out.push({ path: `work/data/${slug}.js`, text: Content.caseFile(c), note: isNew ? 'New case study content' : Publish.caseNote(App.data.cases[slug], c), kind: isNew ? 'A' : 'M' });
+          if (c.confidential) Vault.keep(slug, c);
+          out.push({ path: `work/data/${slug}.js`, text: Content.caseFile(publicCase(c)), note: (isNew ? 'New case study content' : Publish.caseNote(App.data.cases[slug], c)) + (c.confidential ? ' · confidential: chapters kept private' : ''), kind: isNew ? 'A' : 'M' });
           out.push({ path: `work/${slug}.html`, text: pageHTML(c).replace(/\{\{V\}\}/g, v), note: isNew ? 'New page' : 'Page refreshed so visitors get the new version', kind: isNew ? 'A' : 'M', quiet: !isNew });
+        }
+      }
+      // Confidential pages whose public file still has chapters: remove them from the public file
+      for (const slug of Object.keys(App.data.cases)) {
+        const live = App.data.cases[slug];
+        if (live && live.confidential && hasChapters(live) && !(d.cases && slug in d.cases)) {
+          Vault.keep(slug, live);
+          out.push({ path: `work/data/${slug}.js`, text: Content.caseFile(publicCase(live)), note: 'Confidential — remove chapters from the public file (a private copy stays in this browser)', kind: 'M' });
+          out.push({ path: `work/${slug}.html`, text: pageHTML(live).replace(/\{\{V\}\}/g, v), note: 'Page refreshed', kind: 'M', quiet: true });
         }
       }
       for (const p of d.removed || []) out.push({ path: p, remove: true, note: 'Deleted file', kind: 'D' });

@@ -141,7 +141,8 @@
     clear() { localStorage.removeItem(DRAFT_KEY); App.refreshChrome(); },
     count() {
       const d = Drafts.read();
-      return (d.site ? 1 : 0) + Object.keys(d.cases || {}).length + Object.keys(d.files || {}).length + (d.removed || []).length;
+      const leak = App.data ? Object.entries(App.data.cases).filter(([s, c]) => c && c.confidential && !(d.cases && s in d.cases) && ['cover', 'snapshot', 'context', 'process', 'research', 'problem', 'explorations', 'solution', 'impact', 'next', 'learnings'].some(k => k in c)).length : 0;
+      return (d.site ? 1 : 0) + Object.keys(d.cases || {}).length + Object.keys(d.files || {}).length + (d.removed || []).length + leak;
     },
   };
 
