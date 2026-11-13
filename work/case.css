@@ -316,16 +316,11 @@
 /* ---------- Locked banner (confidential case studies) ---------- */
 .cs-cover--locked { position: relative; aspect-ratio: 16 / 9; background: #0d0d0d; display: grid; place-items: center; isolation: isolate; }
 .cs-cover--locked .lk-bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: blur(28px) brightness(.4) saturate(1.1); transform: scale(1.15); z-index: -2; }
-.lk-glow { position: absolute; width: 70%; height: 90%; border-radius: 50%; z-index: -1; opacity: .55;
-  -webkit-mask-image: radial-gradient(closest-side, #000 0%, rgba(0,0,0,.55) 40%, rgba(0,0,0,.15) 72%, transparent 100%);
-          mask-image: radial-gradient(closest-side, #000 0%, rgba(0,0,0,.55) 40%, rgba(0,0,0,.15) 72%, transparent 100%);
-  background: #7a93b7; animation: glow 15s ease-in-out infinite, lk-drift-a 18s ease-in-out infinite alternate; }
-.lk-glow--a { left: -5%; top: 10%; }
-.lk-glow--b { right: -8%; bottom: -10%; width: 60%; animation-delay: -7s, 0s; animation-name: glow, lk-drift-b; opacity: .45; }
-@keyframes lk-drift-a { to { transform: translate(18%, -8%) scale(1.1); } }
-@keyframes lk-drift-b { to { transform: translate(-20%, -12%) scale(.92); } }
-.lk-grain { position: absolute; inset: 0; z-index: -1; opacity: .5;
-  background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px); background-size: 40px 40px; }
+/* Same glow as the footer: one soft light rising from the bottom, slowly changing colour */
+.lk-glow { position: absolute; left: 50%; bottom: -55%; width: 130%; height: 120%; transform: translateX(-50%); z-index: -1; opacity: .6;
+  -webkit-mask-image: radial-gradient(closest-side, #000 0%, rgba(0,0,0,.6) 35%, rgba(0,0,0,.22) 68%, rgba(0,0,0,.06) 86%, transparent 100%);
+          mask-image: radial-gradient(closest-side, #000 0%, rgba(0,0,0,.6) 35%, rgba(0,0,0,.22) 68%, rgba(0,0,0,.06) 86%, transparent 100%);
+  background: #7a93b7; animation: glow 15s ease-in-out infinite; pointer-events: none; }
 .lk-center { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; padding: 24px; }
 .lk-icon { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; color: var(--accent);
   background: rgba(11,11,11,.55); border: 1px solid rgba(255,205,41,.5); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
@@ -337,6 +332,7 @@
 .locked--plain .locked-card { margin: 0 auto; }
 @media (max-width: 640px) {
   .cs-cover--locked { aspect-ratio: 4 / 3; }
+  .lk-glow { width: 180%; bottom: -50%; }
   .lk-icon { width: 60px; height: 60px; }
   .lk-sub { font-size: 13px; }
 }

@@ -151,8 +151,7 @@
       // Locked: same banner slot as the cover, with a moving blurred glow and a lock
       ? `<div class="cs-cover cs-cover--locked" role="img" aria-label="Confidential project">
           ${C.lockedBg ? `<img class="lk-bg" src="${esc(C.lockedBg)}" alt="">` : ''}
-          <span class="lk-glow lk-glow--a" aria-hidden="true"></span><span class="lk-glow lk-glow--b" aria-hidden="true"></span>
-          <span class="lk-grain" aria-hidden="true"></span>
+          <span class="lk-glow" aria-hidden="true"></span>
           <div class="lk-center"><span class="lk-icon">${lockIcon(28)}</span>
             <p class="lk-label">Confidential project</p><p class="lk-sub">Under NDA — the details are available on request</p></div>
         </div>`
