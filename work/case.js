@@ -141,9 +141,6 @@
   const idx = P.findIndex(p => p.slug === C.slug);
   const m = C.meta || {};
   const metaItems = [['Role', m.role], ['Platform', m.platform], ['Timeline', m.timeline], [m.teamLabel || 'Team', m.team]].filter(x => x[1]);
-  // Locked banner background: the chosen image, or this project's (already public) home-page card image
-  const myCard = P.find(p => p.slug === C.slug) || {};
-  const lkBg = C.lockedBg || myCard.thumb || '';
   const hero = `<section class="cs-hero">
     <p class="cs-crumb"><a href="../index.html#works">Works</a> <span aria-hidden="true">/</span> ${esc(C.short || C.title)}</p>
     <div class="cs-brand">${C.logo ? `<img src="${esc(C.logo)}" alt="${esc(C.client)}">` : C.logoFile ? logo(C.logoFile, C.client) : `<span style="font-size:20px">${esc(C.client)}</span>`}<span class="sep" aria-hidden="true"></span><span class="cs-eyebrow">Case study ${num(Math.max(idx, 0))}${C.eyebrow ? ' · ' + esc(C.eyebrow) : ''}</span>${C.confidential ? `<span class="cs-lock">${lockIcon(12)}Confidential</span>` : ''}</div>
@@ -153,8 +150,8 @@
     ${C.confidential
       // Locked: same banner slot as the cover, with a moving blurred glow and a lock
       ? `<div class="cs-cover cs-cover--locked" role="img" aria-label="Confidential project">
-          ${lkBg ? `<img class="lk-bg" src="${esc(lkBg)}" alt="">` : '<span class="lk-glow" aria-hidden="true"></span>'}
-          <span class="lk-tint" aria-hidden="true"></span>
+          ${C.lockedBg ? `<img class="lk-bg" src="${esc(C.lockedBg)}" alt="">` : ''}
+          <span class="lk-glow" aria-hidden="true"></span>
           <div class="lk-center"><span class="lk-icon">${lockIcon(28)}</span>
             <p class="lk-label">Confidential project</p><p class="lk-sub">Under NDA — the details are available on request</p></div>
         </div>`
