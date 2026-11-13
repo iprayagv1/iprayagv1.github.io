@@ -117,21 +117,27 @@
         document.head.appendChild(s);
       });
     },
+    // Confidential case studies keep their locked chapters in work/data/<slug>.locked.js,
+    // a file the public page never loads. The admin merges it back in for editing.
     async load() {
-      let site, cases = {};
-      if (PREVIEW) {
-        site = await Content.loadScript('../content/site.js', 'SITE');
-        for (const c of site.caseStudies || []) {
-          try { cases[c.slug] = await Content.loadScript(`../work/data/${c.slug}.js`, 'CASE'); } catch (e) { cases[c.slug] = null; }
+      let site, cases = {}, raw = {}, locked = {};
+      const get = PREVIEW
+        ? (path, key) => Content.loadScript('../' + path, key)
+        : path => GH.getText(path).then(r => Content.parse(r.text));
+      site = PREVIEW ? await Content.loadScript('../content/site.js', 'SITE') : Content.parse((await GH.getText('content/site.js')).text);
+      await Promise.all((site.caseStudies || []).map(async c => {
+        const pub = await get(`work/data/${c.slug}.js`, 'CASE').catch(() => null);
+        raw[c.slug] = pub;
+        let full = pub ? JSON.parse(JSON.stringify(pub)) : null;
+        if (pub && pub.confidential) {
+          const lk = await get(`work/data/${c.slug}.locked.js`, 'CASE_LOCKED').catch(() => null);
+          if (lk) { locked[c.slug] = true; for (const k in lk) if (!(k in full)) full[k] = lk[k]; }
         }
-      } else {
-        const f = await GH.getText('content/site.js');
-        site = Content.parse(f.text);
-        const list = await Promise.all((site.caseStudies || []).map(c => GH.getText(`work/data/${c.slug}.js`).then(r => Content.parse(r.text)).catch(() => null)));
-        (site.caseStudies || []).forEach((c, i) => { cases[c.slug] = list[i]; });
-      }
-      return { site, cases };
+        cases[c.slug] = full;
+      }));
+      return { site, cases, raw, locked };
     },
+    lockedFile: obj => "// Locked chapters of a confidential case study — edited from /admin. The public page doesn't load this file.\nwindow.CASE_LOCKED = " + JSON.stringify(obj, null, 2) + ';\n',
   };
 
   // ---------- Unpublished changes (kept in this browser until you publish) ----------
@@ -141,7 +147,7 @@
     clear() { localStorage.removeItem(DRAFT_KEY); App.refreshChrome(); },
     count() {
       const d = Drafts.read();
-      const leak = App.data ? Object.entries(App.data.cases).filter(([s, c]) => c && c.confidential && !(d.cases && s in d.cases) && ['cover', 'snapshot', 'context', 'process', 'research', 'problem', 'explorations', 'solution', 'impact', 'next', 'learnings'].some(k => k in c)).length : 0;
+      const leak = App.data && App.data.raw ? Object.entries(App.data.raw).filter(([s, c]) => c && c.confidential && !(d.cases && s in d.cases) && ['cover', 'context', 'process', 'research', 'problem', 'explorations', 'solution', 'impact', 'next', 'learnings'].some(k => k in c)).length : 0;
       return (d.site ? 1 : 0) + Object.keys(d.cases || {}).length + Object.keys(d.files || {}).length + (d.removed || []).length + leak;
     },
   };
