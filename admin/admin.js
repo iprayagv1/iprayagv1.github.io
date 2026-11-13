@@ -161,6 +161,7 @@
     { id: 'ideas', label: 'Articles &amp; ideas', icon: 'art', count: () => (App.data ? ((App.data.site.ideas || {}).items || []).length : '') },
     { id: 'contact', label: 'Contact &amp; links', icon: 'link' },
     { id: 'media', label: 'Media library', icon: 'img' },
+    { id: 'resume', label: 'Resume requests', icon: 'lock', count: () => (App.rqPending ? App.rqPending : '') },
     { id: 'analytics', label: 'Analytics', icon: 'chart' },
     { id: 'history', label: 'Publish history', icon: 'hist' },
   ];
@@ -208,6 +209,7 @@
       App.refreshChrome();
       App.route();
       window.addEventListener('hashchange', App.route);
+      if (window.Admin.resumePending) window.Admin.resumePending().then(n => { App.rqPending = n; App.refreshChrome(); });
     },
     async enterPreview() {
       sessionStorage.setItem('pg-admin-preview', '1');
