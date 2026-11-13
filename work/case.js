@@ -159,6 +159,8 @@
     </div></div>` : '';
 
   // ---------- Chapter bar ----------
+  // Confidential: never show chapters, even if the data file still has them
+  if (C.confidential) chapters.length = 0;
   const bar = chapters.length ? `<nav class="cs-chapters" aria-label="Chapters"><ol>${chapters.map((c, i) => `<li><a href="#${c.id}" data-ch="${c.id}">${num(i)} ${esc(c.name)}</a></li>`).join('')}</ol></nav>` : '';
 
   // ---------- Keep reading ----------
