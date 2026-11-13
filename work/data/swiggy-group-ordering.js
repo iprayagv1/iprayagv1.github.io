@@ -3,7 +3,7 @@ window.CASE = {
   "slug": "swiggy-group-ordering",
   "short": "Swiggy Group Ordering",
   "client": "Swiggy",
-  "logoFile": "swiggy.png",
+  "logoFile": "swiggy-logo-1.svg",
   "eyebrow": "Concept · Mobile app",
   "title": "Solving group ordering friction for Swiggy",
   "summary": "A conceptual UX exploration proposing a Group Cart feature for Swiggy, to reduce friction when ordering with friends from multiple restaurants.",
