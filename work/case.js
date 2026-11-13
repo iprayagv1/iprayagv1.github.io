@@ -147,11 +147,20 @@
     <h1 class="cs-title">${esc(C.title)}</h1>
     ${C.summary ? `<p class="cs-summary">${md(C.summary)}</p>` : ''}
     <dl class="cs-meta">${metaItems.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
-    ${C.confidential ? '' : `<div class="cs-cover">${media(C.cover || 'cover.png', 'Cover: ' + C.title, '16 / 9')}</div>`}
+    ${C.confidential
+      // Locked: same banner slot as the cover, with a moving blurred glow and a lock
+      ? `<div class="cs-cover cs-cover--locked" role="img" aria-label="Confidential project">
+          ${C.lockedBg ? `<img class="lk-bg" src="${esc(C.lockedBg)}" alt="">` : ''}
+          <span class="lk-glow lk-glow--a" aria-hidden="true"></span><span class="lk-glow lk-glow--b" aria-hidden="true"></span>
+          <span class="lk-grain" aria-hidden="true"></span>
+          <div class="lk-center"><span class="lk-icon">${lockIcon(28)}</span>
+            <p class="lk-label">Confidential project</p><p class="lk-sub">Under NDA — the details are available on request</p></div>
+        </div>`
+      : `<div class="cs-cover">${media(C.cover || 'cover.png', 'Cover: ' + C.title, '16 / 9')}</div>`}
   </section>`;
 
   // ---------- Confidential body ----------
-  const locked = C.confidential ? `<div class="locked">${C.lockedBg ? `<img src="${esc(C.lockedBg)}" alt="" aria-hidden="true">` : ''}
+  const locked = C.confidential ? `<div class="locked locked--plain">
     <div class="locked-card"><div class="locked-icon">${lockIcon(24)}</div>
       <h2>This project is confidential</h2>
       <p>${md(C.lockedText || 'The work is under NDA, so the details can’t be shared publicly. I’m happy to walk you through the process and decisions on a call.')}</p>
@@ -159,9 +168,9 @@
     </div></div>` : '';
 
   // ---------- Chapter bar ----------
-  // Confidential: never show chapters, even if the data file still has them
-  if (C.confidential) chapters.length = 0;
-  const bar = chapters.length ? `<nav class="cs-chapters" aria-label="Chapters"><ol>${chapters.map((c, i) => `<li><a href="#${c.id}" data-ch="${c.id}">${num(i)} ${esc(c.name)}</a></li>`).join('')}</ol></nav>` : '';
+  // Confidential: only the Snapshot is shown; every other chapter is locked
+  if (C.confidential) { const snap = chapters.filter(c => c.id === 'snapshot'); chapters.length = 0; chapters.push(...snap); }
+  const bar = chapters.length && !C.confidential ? `<nav class="cs-chapters" aria-label="Chapters"><ol>${chapters.map((c, i) => `<li><a href="#${c.id}" data-ch="${c.id}">${num(i)} ${esc(c.name)}</a></li>`).join('')}</ol></nav>` : '';
 
   // ---------- Keep reading ----------
   let more = '';
@@ -178,7 +187,9 @@
 
   document.title = `${C.short || C.title} — Prayag Gangadharan`;
   // The chapter bar shares a container with the chapters, so it stays stuck for the whole read
-  root.innerHTML = `<div class="case">${hero}${locked}</div><div class="case">${bar}${chapters.map(chapterHTML).join('')}${more}</div>`;
+  root.innerHTML = C.confidential
+    ? `<div class="case">${hero}</div><div class="case">${chapters.map(chapterHTML).join('')}${locked}${more}</div>`
+    : `<div class="case">${hero}${locked}</div><div class="case">${bar}${chapters.map(chapterHTML).join('')}${more}</div>`;
 
   // ---------- Behaviour ----------
   // Missing screenshots → labelled placeholder showing exactly which file to add
