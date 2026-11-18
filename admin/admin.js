@@ -294,7 +294,8 @@
       nav.innerHTML = NAV.map(n => {
         const c = n.count ? n.count() : '';
         return `<a class="navlink${n.id === cur ? ' is-active' : ''}" href="#/${n.id}"${n.id === cur ? ' aria-current="page"' : ''}>${ic(n.icon)}<span>${n.label}</span>${c !== '' ? `<span class="count">${c}</span>` : ''}</a>`;
-      }).join('') + (pend ? `<a class="navlink" href="#/publish">${ic('check')}<span>Review &amp; publish</span><span class="dot" aria-label="${pend} unpublished"></span></a>` : '');
+      }).join('') + (pend ? `<a class="navlink" href="#/publish">${ic('check')}<span>Review &amp; publish</span><span class="dot" aria-label="${pend} unpublished"></span></a>` : '')
+        + `<a class="navlink" href="https://claude.ai/artifact/FeAespedAt6YEtzJNfLHAH" target="_blank" rel="noopener">${ic('art')}<span>Design system</span>${ic('ext')}</a>`;
     },
     current() { return (location.hash.replace(/^#\/?/, '').split('/')[0]) || 'dashboard'; },
     route() {
