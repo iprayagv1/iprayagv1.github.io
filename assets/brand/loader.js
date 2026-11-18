@@ -1,10 +1,9 @@
 /* PG Loop page loader. Load it in <head> (not deferred) together with loader.css.
-   Shows once per browser session. The G forms; if the page is still loading,
+   Splash screen: runs on every page load and refresh. The G forms; if the page is still loading,
    a yellow light circles the G until it has; then the p tail grows and the loader fades.
    Never waits on loading for more than 8 seconds. */
 (function () {
   var html = document.documentElement;
-  try { if (sessionStorage.getItem('pg-loader')) return; sessionStorage.setItem('pg-loader', '1'); } catch (e) {}
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var FORM = 1155, TAIL = 490, HOLD = 300, FADE = 500, MAX_WAIT = 8000;
   var el, loaded = false, formed = false, finished = false;
