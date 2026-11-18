@@ -406,7 +406,6 @@
             `<button type="button" class="filter${List.filter === k ? ' is-on' : ''}" data-filter="${k}" aria-pressed="${List.filter === k}">${t}</button>`).join('')}</div>
           <span class="muted toolbar__tip">Drag to reorder — same order as on your home page${orderChanged ? ' · <b style="color:var(--accent);font-weight:400">order changed</b>' : ''}</span>
         </div>
-        ${(!PREVIEW || App.signedIn()) && List.lost().length ? `<div class="banner banner--wait">${ic('warn')}<span>${List.lost().length} case stud${List.lost().length > 1 ? 'ies have' : 'y has'} no chapters left (an earlier version removed them when locking). Earlier versions are in your GitHub history.</span><span class="right"><button type="button" class="btn btn--sm btn--primary" id="restore">${ix('undo')}Restore from history</button></span></div>` : ''}
         <div class="table-card" id="rows"></div>
         <p class="hint">Kiwi and Figma Auto Layout are external articles — edit them under <a href="#/ideas" style="color:var(--accent)">Articles &amp; ideas</a>.</p>
       </div>`;
@@ -464,7 +463,7 @@
             <span class="grip" ${drag ? '' : 'style="opacity:.2"'} aria-hidden="true">${ix('grip')}</span>
             <span class="thumb">${c.thumb ? `<img src="${esc(Files.src(c.thumb))}" alt="" loading="lazy">` : ''}</span>
             <a class="trow__title" href="#/case-studies/edit/${encodeURIComponent(c.slug)}"><b>${esc(c.title || c.slug)}</b><small>/work/${esc(c.slug)}.html · ${esc(c.client || '')}${c.date ? ' · ' + esc(c.date) : ''}${edited ? ' · <span style="color:var(--accent)">unpublished edits</span>' : ''}${Store.isNew(c.slug) ? ' · <span style="color:var(--accent)">new</span>' : ''}</small></a>
-            <span>${status}</span>
+            <span class="trow__status">${status}${c.status === 'published' ? `<label class="switch switch--sm" title="${conf(c) ? 'Make public' : 'Make confidential'}"><input type="checkbox" data-conf${conf(c) ? ' checked' : ''} aria-label="Confidential: ${esc(c.title)}"><span></span></label>` : ''}</span>
             <span class="muted" style="font-size:13px">${c.showIn === 'ideas' ? 'Ideas' : c.showIn === 'none' ? 'Link only' : 'Solved Problems'}</span>
             <span class="trow__acts">
               <button type="button" class="icon-btn" data-move="-1" aria-label="Move ${esc(c.title)} up"${idx === 0 ? ' disabled' : ''}>${ix('up')}</button>
@@ -482,6 +481,13 @@
         const t = $('.toolbar__tip'); if (t) t.innerHTML = 'Drag to reorder — same order as on your home page · <b style="color:var(--accent);font-weight:400">order changed</b>';
       };
       el.querySelectorAll('[data-move]').forEach(b => b.onclick = () => { const r = b.closest('.trow'); move(+r.dataset.i, +r.dataset.i + +b.dataset.move); });
+      el.querySelectorAll('[data-conf]').forEach(b => b.onchange = () => {
+        const slug = b.closest('.trow').dataset.slug, obj = Store.caseOf(slug);
+        if (!obj) return;
+        if (b.checked) obj.confidential = true; else { delete obj.confidential; Vault.restore(slug, obj); }
+        Store.saveCase(slug, obj); List.rows(); App.refreshChrome();
+        toast(b.checked ? 'Locked — publish to update the site' : 'Public — publish to update the site');
+      });
       el.querySelectorAll('[data-remove]').forEach(b => b.onclick = () => Remove.open(b.closest('.trow').dataset.slug));
       let dragI = null;
       el.querySelectorAll('.trow[draggable]').forEach(r => {
@@ -554,16 +560,24 @@
       main.innerHTML = App.topbar(`<a href="#/case-studies" class="crumb">Case studies</a> / ${esc(card.title || slug)}`, 'Edit case study',
         `<span class="saved" id="saved">${edited ? 'Saved in this browser' : 'Edits save automatically'}</span>
          ${edited ? `<button type="button" class="btn" id="discard">${ix('undo')}Discard changes</button>` : ''}
+         ${PREVIEW && !App.signedIn() ? '' : `<button type="button" class="btn" id="versions">${ic('hist')}Version history</button>`}
          <a class="btn btn--primary" href="#/publish">${ix('upload')}Review &amp; publish</a>`) + `
+      <div class="confbar${c.confidential ? ' is-locked' : ''}">
+        <span class="confbar__ic">${ic(c.confidential ? 'lock' : 'eye')}</span>
+        <span class="confbar__txt"><b>${c.confidential ? 'Confidential — locked' : 'Public'}</b><small>${c.confidential ? 'Visitors see the header, the locked banner and the Snapshot. Everything else stays saved here.' : 'Visitors see every chapter.'}</small></span>
+        <label class="switch" title="Confidential"><input type="checkbox" id="conf-switch"${c.confidential ? ' checked' : ''} aria-label="Confidential"><span></span></label>
+      </div>
       <div class="editor" id="editor">
         <nav class="chapters" aria-label="Chapters"><span class="label">Page</span>
           ${CHAPTERS.slice(0, 2).map(Editor.tab).join('')}
           <span class="label" style="margin-top:14px">Chapters</span>
-          ${c.confidential ? '<p class="hint" style="padding:6px 12px">Confidential pages show no chapters.</p>' : CHAPTERS.slice(2).map(Editor.tab).join('')}
+          ${c.confidential ? '<p class="hint" style="padding:0 12px 6px">🔒 Locked chapters are saved but only visitors see the Snapshot. Edit them freely.</p>' : ''}
+          ${CHAPTERS.slice(2).map(Editor.tab).join('')}
         </nav>
         <form class="eform" id="eform" novalidate autocomplete="off"></form>
         <aside class="preview" aria-label="Live preview">
           <div class="preview__bar"><span class="dots"><i></i><i></i></span><span class="muted">Live preview · /work/${esc(slug)}</span>
+            ${c.confidential ? `<span class="seg seg--text" role="group" aria-label="Preview as"><button type="button" data-view="visitor" aria-pressed="${Editor.view() === 'visitor'}">Visitor</button><button type="button" data-view="full" aria-pressed="${Editor.view() === 'full'}">Full</button></span>` : ''}
             <span class="seg" role="group" aria-label="Preview size"><button type="button" data-dev="desktop" aria-pressed="${Editor.device === 'desktop'}" aria-label="Desktop">${ix('desktop')}</button><button type="button" data-dev="mobile" aria-pressed="${Editor.device === 'mobile'}" aria-label="Mobile">${ix('phone')}</button></span></div>
           <div class="preview__stage" id="stage"><iframe id="frame" title="Preview of the case study page" src="../work/preview.html?v=1"></iframe></div>
         </aside>
@@ -577,9 +591,17 @@
       const on = t.id === Editor.ch;
       const present = t.id === 'card' || t.id === 'basics' || (t.id in c);
       return `<a class="chap${on ? ' is-on' : ''}" href="#/case-studies/edit/${encodeURIComponent(Editor.slug)}/${t.id}"${on ? ' aria-current="page"' : ''}>
-        <span>${esc(t.id === 'explorations' && c.explorations && c.explorations.name ? c.explorations.name : t.name)}</span><i class="pip${present ? ' on' : ''}" title="${present ? 'On the page' : 'Not on the page'}"></i></a>`;
+        <span>${esc(t.id === 'explorations' && c.explorations && c.explorations.name ? c.explorations.name : t.name)}</span>${c.confidential && present && !['card', 'basics', 'snapshot'].includes(t.id) ? `<span class="chap__lock" title="Locked — hidden from visitors">${ic('lock')}</span>` : ''}<i class="pip${present ? ' on' : ''}" title="${present ? 'On the page' : 'Not on the page'}"></i></a>`;
     },
     ctx() { return { slug: Editor.slug }; },
+    // Preview a locked case study as visitors see it, or with every chapter (default on chapter tabs)
+    view() { return Editor.viewMode || (['card', 'basics', 'snapshot'].includes(Editor.ch) ? 'visitor' : 'full'); },
+    setConf(on) {
+      const obj = Editor.data;
+      if (on) { obj.confidential = true; toast('Locked — visitors see the header and Snapshot. Everything else stays saved.'); }
+      else { delete obj.confidential; Vault.restore(Editor.slug, obj); toast(hasLocked(obj) ? 'Public — all chapters show after you publish' : 'Public'); }
+      Editor.save(); setTimeout(() => App.route(), 400);
+    },
     form() {
       const t = CHAPTERS.find(x => x.id === Editor.ch);
       const c = Editor.data, el = $('#eform');
@@ -623,11 +645,7 @@
         const v = Form.read(el, obj);
         setAt(obj, el.dataset.path, v);
         if (el.dataset.kind === 'role') { el.className = el.className.replace(/role-\w+/, 'role-' + (el.value || 'plain')); }
-        if (el.dataset.path === 'confidential') {
-          if (v) toast('Locked — visitors see the header and Snapshot. Everything else stays saved.');
-          else { Vault.restore(Editor.slug, obj); toast(hasLocked(obj) ? 'Public — all chapters will show after you publish' : 'Public'); }
-          Editor.save(); setTimeout(() => App.route(), 400); return;
-        }
+        if (el.dataset.path === 'confidential') { Editor.setConf(!!v); return; }
         if (el.dataset.rerender) Editor.form();
         if (el.dataset.path === 'explorations.name') { const tab = $('.chapters a.is-on span'); if (tab) tab.textContent = el.value || 'Explorations'; }
         Editor.save();
@@ -672,6 +690,9 @@
         finally { lab.classList.remove('is-busy'); }
       });
       const d = $('#discard'); if (d) d.onclick = Editor.discard;
+      const vb = $('#versions'); if (vb) vb.onclick = () => Versions.open(Editor.slug);
+      const cs = $('#conf-switch'); if (cs) cs.onchange = () => Editor.setConf(cs.checked);
+      main.querySelectorAll('[data-view]').forEach(b => b.onclick = () => { Editor.viewMode = b.dataset.view; main.querySelectorAll('[data-view]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); Editor.push(); });
       main.querySelectorAll('[data-dev]').forEach(b => b.onclick = () => { Editor.device = b.dataset.dev; main.querySelectorAll('[data-dev]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); Editor.fit(); });
     },
     after(focusLast) {
@@ -703,7 +724,55 @@
       (site.caseStudies || []).forEach(p => { if (p.thumb && Files.urls[p.thumb]) p.thumb = Files.urls[p.thumb]; });
       const map = {}; Object.keys(Files.urls).forEach(k => { map[k] = Files.urls[k]; });
       const ch = CHAPTERS.find(x => x.id === Editor.ch);
-      fr.contentWindow.postMessage({ type: 'pg-preview', case: Editor.data, site, files: map, scrollTo: scroll && ch && !ch.site && ch.id !== 'basics' ? Editor.ch : null }, '*');
+      const shown = Editor.data.confidential && Editor.view() === 'full' ? Object.assign({}, Editor.data, { confidential: false }) : Editor.data;
+      fr.contentWindow.postMessage({ type: 'pg-preview', case: shown, site, files: map, scrollTo: scroll && ch && !ch.site && ch.id !== 'basics' ? Editor.ch : null }, '*');
+    },
+  };
+
+  // ======================================================
+  // Version history — every publish of a case study, restorable
+  // ======================================================
+  const Versions = {
+    async read(path, ref) {
+      const r = await GH.req(GH.repo(`/contents/${encodeURI(path)}?ref=${ref}`)).catch(() => null);
+      if (!r) return null;
+      const bin = atob(r.content.replace(/\n/g, ''));
+      return Content.parse(new TextDecoder().decode(Uint8Array.from(bin, ch => ch.charCodeAt(0))));
+    },
+    async open(slug) {
+      const wrap = document.createElement('div'); wrap.className = 'modal';
+      wrap.innerHTML = `<div class="modal__box modal__box--wide" role="dialog" aria-modal="true" aria-labelledby="vh-t">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px"><div><h2 id="vh-t">Version history</h2><p class="muted" style="margin-top:6px">Every time this case study was published. Restoring loads that version into the editor as unpublished changes — check it in the preview, then publish, or discard to undo.</p></div>
+        <button type="button" class="icon-btn" data-x aria-label="Close">${ix('x')}</button></div>
+        <div class="vh-list" id="vh-list"><p class="muted">Loading versions…</p></div></div>`;
+      document.body.appendChild(wrap);
+      const close = () => wrap.remove();
+      wrap.addEventListener('click', e => { if (e.target === wrap || e.target.closest('[data-x]')) close(); });
+      wrap.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+      $('[data-x]', wrap).focus();
+      const sf = CFG.siteFolder ? CFG.siteFolder.replace(/\/+$/, '') + '/' : '';
+      const paths = [`work/data/${slug}.js`, `work/data/${slug}.locked.js`];
+      try {
+        const lists = await Promise.all(paths.map(p => GH.req(GH.repo(`/commits?path=${encodeURIComponent(sf + p)}&sha=${CFG.branch}&per_page=40`)).catch(() => [])));
+        const seen = {}, all = [];
+        lists.flat().forEach(c => { if (!seen[c.sha]) { seen[c.sha] = 1; all.push(c); } });
+        all.sort((a, b) => new Date(b.commit.author.date) - new Date(a.commit.author.date));
+        const el = $('#vh-list', wrap);
+        if (!all.length) { el.innerHTML = '<p class="empty">No earlier versions found.</p>'; return; }
+        el.innerHTML = all.map((c, i) => `<div class="vh-row"><span class="hist__dot${i === 0 ? ' is-live' : ''}"></span>
+          <p><b>${esc(c.commit.message.split('\n')[0])}</b><small>${new Date(c.commit.author.date).toLocaleString()} · ${ago(c.commit.author.date)}${i === 0 ? ' · <span style="color:var(--green)">live now</span>' : ''}</small></p>
+          ${i === 0 ? '<span></span>' : `<button type="button" class="btn btn--sm" data-sha="${c.sha}">${ix('undo')}Restore</button>`}</div>`).join('');
+        el.querySelectorAll('[data-sha]').forEach(b => b.onclick = async () => {
+          b.disabled = true; b.innerHTML = '<span class="spinner"></span> Restoring…';
+          const [pub, lk] = await Promise.all(paths.map(p => Versions.read(sf + p, b.dataset.sha)));
+          if (!pub) { b.disabled = false; b.innerHTML = ix('undo') + 'Restore'; return toast('Couldn’t read that version'); }
+          const full = Object.assign({}, pub); if (lk) for (const k in lk) if (!(k in full)) full[k] = lk[k];
+          full.slug = slug;
+          Store.saveCase(slug, full);
+          close(); toast('Version restored — review it, then publish (or Discard changes to undo)');
+          App.route();
+        });
+      } catch (e) { $('#vh-list', wrap).innerHTML = `<p class="error">Couldn’t load versions: ${esc(e.message)}</p>`; }
     },
   };
 
