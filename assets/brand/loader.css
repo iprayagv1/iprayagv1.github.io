@@ -1,0 +1,41 @@
+/* PG Loop page loader — the G forms, waits (yellow light circling) until the page has loaded, then the p tail grows. */
+html.pg-loading { background: #0b0b0b; }
+html.pg-loading body { visibility: hidden; }
+.pg-loader {
+  position: fixed; inset: 0; z-index: 9999;
+  display: grid; place-items: center;
+  background: #0b0b0b; visibility: visible;
+  transition: opacity .5s ease, visibility .5s;
+}
+.pg-loader svg { width: 96px; height: 96px; overflow: visible; transition: transform .5s cubic-bezier(.65,0,.35,1); }
+.pg-loader.is-done { opacity: 0; visibility: hidden; }
+.pg-loader.is-done svg { transform: scale(.7); }
+.pg-loader path { fill: none; stroke-width: 14; stroke-linecap: round; }
+.pl-arc, .pl-up, .pl-down { stroke: #f3f3f3; }
+.pl-bar, .pl-tip, .pl-trail { stroke: #ffcd29; }
+
+.pl-arc   { stroke-dasharray: 281; stroke-dashoffset: 281; }
+.pl-tip   { stroke-dasharray: 40 640; stroke-dashoffset: 40; }
+.pl-bar   { stroke-dasharray: 47; stroke-dashoffset: 47; }
+.pl-up    { stroke-dasharray: 46; stroke-dashoffset: 46; }
+.pl-down  { stroke-dasharray: 86; stroke-dashoffset: 86; }
+.pl-trail { stroke-dasharray: 44 400; opacity: 0; transition: opacity .3s ease; }
+
+/* 1 · the G forms: bowl eases in, yellow light leads it, bar follows at the same speed */
+.is-forming .pl-arc { animation: plDraw 1.04s cubic-bezier(.4,0,.667,.5) forwards; }
+.is-forming .pl-tip { animation: plTip 1.2s forwards; }
+.is-forming .pl-bar { animation: plDraw .115s linear 1.04s forwards; }
+/* 2 · still loading: a yellow light keeps circling the G */
+.is-waiting .pl-trail { opacity: 1; animation: plTrail 1.3s linear infinite; }
+/* 3 · loaded: the p tail grows out of the bowl's edge, up and down at once */
+.is-finishing .pl-trail { opacity: 0; }
+.is-finishing .pl-up, .is-finishing .pl-down { animation: plDraw .49s cubic-bezier(.333,.5,.6,1) forwards; }
+
+@keyframes plDraw  { to { stroke-dashoffset: 0; } }
+@keyframes plTip   { 0% { stroke-dashoffset: 40; opacity: 1; animation-timing-function: cubic-bezier(.4,0,.667,.5); }
+                     86.7% { stroke-dashoffset: -241; opacity: 1; } 100% { stroke-dashoffset: -241; opacity: 0; } }
+@keyframes plTrail { from { stroke-dashoffset: 444; } to { stroke-dashoffset: 0; } }
+
+/* Reduced motion: the still mark, then a quick fade */
+.pg-loader.is-still path { stroke-dashoffset: 0 !important; animation: none !important; }
+.pg-loader.is-still .pl-tip, .pg-loader.is-still .pl-trail { display: none; }
