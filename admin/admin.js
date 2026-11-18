@@ -229,7 +229,7 @@
       const tokenUrl = `https://github.com/settings/personal-access-tokens/new?name=${encodeURIComponent('Portfolio admin')}&description=${encodeURIComponent('Edit ' + CFG.repo + ' from /admin')}&contents=write`;
       $('#app').innerHTML = `
       <div class="signin"><main class="signin__wrap">
-        <div class="signin__top"><a class="logo" href="../index.html" aria-label="Back to the website">PG</a><span class="chip">Admin</span></div>
+        <div class="signin__top"><a class="logo" href="../index.html" aria-label="Back to the website"><svg viewBox="15 22.5 170 170" aria-hidden="true" focusable="false"><path class="loop" d="M138.3 57.9 A50 50 0 1 0 150 90"/><path class="bar" d="M150 90 H104"/><path class="loop" d="M50 45 V175"/></svg></a><span class="chip">Admin</span></div>
         <div class="signin__card">
           <h1>Sign in to edit your portfolio</h1>
           <p>Changes are saved straight to your GitHub repo <span style="color:var(--text)">${esc(CFG.owner)}/${esc(CFG.repo)}</span>. Only a token from @${esc(CFG.owner)} with write access can sign in.</p>
@@ -274,7 +274,7 @@
       $('#app').innerHTML = `
       <div class="shell" id="shell">
         <aside class="side" id="side" aria-label="Admin">
-          <div class="side__brand"><a class="logo" href="#/dashboard">PG</a><span class="chip">Admin</span></div>
+          <div class="side__brand"><a class="logo" href="#/dashboard" aria-label="Dashboard"><svg viewBox="15 22.5 170 170" aria-hidden="true" focusable="false"><path class="loop" d="M138.3 57.9 A50 50 0 1 0 150 90"/><path class="bar" d="M150 90 H104"/><path class="loop" d="M50 45 V175"/></svg></a><span class="chip">Admin</span></div>
           <nav id="nav"></nav>
           <div class="side__user">
             <div class="who"><span class="avatar">${u.avatar_url ? `<img src="${esc(u.avatar_url)}" alt="">` : 'PG'}</span>
