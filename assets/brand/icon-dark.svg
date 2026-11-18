@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>PG icon, dark</title>
+  <rect width="1024" height="1024" rx="245.76" fill="#0B0B0B"/>
+  <svg x="192" y="192" width="640" height="640" viewBox="15 22.5 170 170">
+    <path d="M138.3 57.9 A50 50 0 1 0 150 90" fill="none" stroke="#F3F3F3" stroke-width="16" stroke-linecap="round"/>
+  <path d="M150 90 H104" fill="none" stroke="#FFCD29" stroke-width="16" stroke-linecap="round"/>
+  <path d="M50 45 V175" fill="none" stroke="#F3F3F3" stroke-width="16" stroke-linecap="round"/>
+  </svg>
+</svg>

@@ -46,6 +46,7 @@
     warn: '<path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/>',
     menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
     info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>',
+    brand: '<path d="M16.6 7.6A6 6 0 1 0 18 12h-5.2"/><path d="M6 6v15"/>',
   };
   const ic = (k, extra = '') => `<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${P[k]}</svg>`;
 
@@ -164,6 +165,7 @@
     { id: 'resume', label: 'Resume requests', icon: 'lock', count: () => (App.rqPending ? App.rqPending : '') },
     { id: 'analytics', label: 'Analytics', icon: 'chart' },
     { id: 'history', label: 'Publish history', icon: 'hist' },
+    { id: 'design-system', label: 'Design system', icon: 'brand' },
   ];
   const SOON = {
     'case-studies': ['Step 3', 'Add, reorder, edit and remove case studies — every chapter, with a live preview, image upload and Publish.'],
@@ -294,8 +296,7 @@
       nav.innerHTML = NAV.map(n => {
         const c = n.count ? n.count() : '';
         return `<a class="navlink${n.id === cur ? ' is-active' : ''}" href="#/${n.id}"${n.id === cur ? ' aria-current="page"' : ''}>${ic(n.icon)}<span>${n.label}</span>${c !== '' ? `<span class="count">${c}</span>` : ''}</a>`;
-      }).join('') + (pend ? `<a class="navlink" href="#/publish">${ic('check')}<span>Review &amp; publish</span><span class="dot" aria-label="${pend} unpublished"></span></a>` : '')
-        + `<a class="navlink" href="https://claude.ai/artifact/FeAespedAt6YEtzJNfLHAH" target="_blank" rel="noopener">${ic('art')}<span>Design system</span>${ic('ext')}</a>`;
+      }).join('') + (pend ? `<a class="navlink" href="#/publish">${ic('check')}<span>Review &amp; publish</span><span class="dot" aria-label="${pend} unpublished"></span></a>` : '');
     },
     current() { return (location.hash.replace(/^#\/?/, '').split('/')[0]) || 'dashboard'; },
     route() {
