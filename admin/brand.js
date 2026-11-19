@@ -69,7 +69,7 @@
 
         ${sec('spacing', 'Spacing', `<div class="ds-list">${SPACE.map(s => `<div class="ds-list__row"><b>${s[0]}</b><code>${s[1]}px</code><span class="ds-bar" style="width:${s[1] * 2}px"></span><small>${s[2]}</small></div>`).join('')}</div>`)}
 
-        ${sec('corners', 'Corner radius', `<div class="ds-grid ds-grid--4">${RADIUS.map(r => `<figure class="ds-fig"><div class="ds-radius" style="border-radius:${r[0] === 'radius-pill' ? '999px' : r[1]}${r[0] === 'radius-pill' ? ';height:56px' : ''}"></div><figcaption><b>${r[0]}</b> · ${r[1]}<br><small>${r[2]}</small></figcaption></figure>`).join('')}</div>`)}
+        ${sec('corners', 'Corner radius', `<div class="ds-grid ds-grid--4">${RADIUS.map(r => `<figure class="ds-fig"><div class="ds-radius${r[0] === 'radius-pill' ? ' ds-radius--pill' : ''}" style="border-radius:${r[1]}"></div><figcaption><b>${r[0]}</b> · ${r[1]}<br><small>${r[2]}</small></figcaption></figure>`).join('')}</div>`)}
 
         ${sec('stroke', 'Stroke', `<p class="ds-note">The Loop is drawn on a 170-unit grid. Its stroke thickens as the mark gets smaller so it stays crisp.</p>
           <div class="ds-grid ds-grid--4">${STROKE.map(s => `<figure class="ds-fig"><div class="ds-tile ds-tile--dark">${MARK(s[1])}</div><figcaption><b>${s[0]}</b> · ${s[1]}<br><small>${s[2]}</small></figcaption></figure>`).join('')}</div>`)}
