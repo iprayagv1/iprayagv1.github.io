@@ -277,8 +277,8 @@
 .navcard.next:hover .dir svg { transform: translateX(6px); }
 .navcard .ttl { margin-top: 14px !important; font-family: var(--serif); font-size: clamp(24px, 2.2vw, 30px); line-height: 1.2; }
 .navcard .sub { margin-top: 8px !important; font-size: 15px; color: rgba(243,243,243,.55); }
-.navcard .pic { margin-top: 28px; height: 240px; overflow: hidden; display: flex; justify-content: center; padding: 0 32px; }
-.navcard .pic img { width: 100%; max-width: 420px; height: 100%; object-fit: cover; object-position: top; border-radius: 10px 10px 0 0; transition: transform .8s cubic-bezier(.22,.61,.36,1); }
+.navcard .pic { margin-top: 28px; height: 300px; overflow: hidden; display: flex; justify-content: center; padding: 0 32px; }
+.navcard .pic img { width: 100%; max-width: 500px; height: 100%; object-fit: cover; object-position: center top; transition: transform .8s cubic-bezier(.22,.61,.36,1); }
 .navcard:hover .pic img { transform: translateY(-10px); }
 .more-count { margin-top: 28px !important; text-align: center; font-size: 14px; letter-spacing: .14em; color: rgba(243,243,243,.5); }
 

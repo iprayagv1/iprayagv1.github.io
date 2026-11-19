@@ -383,7 +383,7 @@ h1, h2, h3, p { margin: 0; font-weight: 400; }
 .card__date strong { font-weight: 400; font-size: 18px; }
 .card__shot {
   position: absolute; right: 0; bottom: 0;
-  width: 54%; max-width: 320px;
+  width: 58%; max-width: 360px;
   border-top-left-radius: 10px;
   transition: transform .6s var(--ease);
   transform-origin: bottom right;
@@ -517,7 +517,7 @@ h1, h2, h3, p { margin: 0; font-weight: 400; }
   .cards__col { gap: 32px; }
   .cards__col--offset { padding-top: 0; }
   /* order: onboarding, AI assistant, help center, enphase -> matches tablet design */
-  .card { min-height: 420px; }
+  .card { min-height: 520px; }
   .card .tags { max-width: 55%; }
 
   .article { grid-template-columns: 1fr; gap: 24px; }
