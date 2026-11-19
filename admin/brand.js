@@ -39,8 +39,8 @@
       View.stop();
       main.innerHTML = App.topbar('Brand', 'Design system', `<a class="btn" href="${DS_URL}" target="_blank" rel="noopener">${ic('ext')}Open in Claude</a>`) + `<div class="content ds">
         <div class="card ds-cover">
-          <div class="ds-cover__text"><h2>Prayag Gangadharan</h2><p>I step into problems and design my way out of them.</p></div>
-          <div class="ds-cover__mark">${MARK(14)}</div>
+          <h2 class="ds-cover__name">Prayag<br>Gangadharan</h2>
+          <svg class="ds-cover__art" viewBox="0 0 480 288" aria-hidden="true"><rect class="accent" x="80" y="0" width="192" height="288"></rect><rect class="ink" x="272" y="0" width="208" height="160"></rect><rect class="muted" x="272" y="208" width="96" height="80"></rect><g transform="translate(126.0 24.2) scale(0.5)"><path class="s-onaccent" d="M138.3 57.9 A50 50 0 1 0 150 90"></path><path class="s-onaccent" d="M150 90 H104"></path></g><g transform="translate(126.0 152.2) scale(0.5)"><path class="s-onaccent" d="M138.3 57.9 A50 50 0 1 0 150 90"></path><path class="s-onaccent" d="M150 90 H104"></path><path class="s-onaccent" d="M50 45 V175"></path></g><g transform="translate(304.0 6.6) scale(0.72)"><path class="s-ground" d="M138.3 57.9 A50 50 0 1 0 150 90"></path><path class="s-accent" d="M150 90 H104"></path><path class="s-ground" d="M50 45 V175"></path></g><circle class="accent" cx="320" cy="248" r="9"></circle></svg>
         </div>
         <nav class="ds-toc" aria-label="Sections">${['Idea', 'Logo', 'Colour', 'Type', 'Spacing', 'Corners', 'Stroke', 'Motion', 'Assets'].map(s => `<a href="#ds-${s.toLowerCase()}" data-sec="${s.toLowerCase()}">${s}</a>`).join('')}</nav>
 
