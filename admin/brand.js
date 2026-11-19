@@ -30,9 +30,7 @@
     ['Icon · dark tile', 'icon-dark.svg', 'plain'], ['Icon · yellow tile', 'app-icon.svg', 'plain'], ['Favicon', 'favicon.svg', 'plain'],
   ];
   const MARK = (stroke = 14, bar = 'var(--accent)', ink = 'var(--text)') => `<svg viewBox="15 22.5 170 170" aria-hidden="true"><path d="M138.3 57.9 A50 50 0 1 0 150 90" fill="none" stroke="${ink}" stroke-width="${stroke}" stroke-linecap="round"/><path d="M150 90 H104" fill="none" stroke="${bar}" stroke-width="${stroke}" stroke-linecap="round"/><path d="M50 45 V175" fill="none" stroke="${ink}" stroke-width="${stroke}" stroke-linecap="round"/></svg>`;
-  const LOADER = `<div class="pg-loader" id="ds-loader" role="img" aria-label="The Loop splash screen"><svg viewBox="15 22.5 170 170" focusable="false">
-    <path class="pl-arc" d="M138.3 57.9 A50 50 0 1 0 150 90"/><path class="pl-bar" d="M104 90 H150"/><path class="pl-tip" d="M138.3 57.9 A50 50 0 1 0 150 90 H104"/>
-    <circle class="pl-dot" cx="104" cy="90" r="7"/><path class="pl-up" d="M50 90 V45"/><path class="pl-down" d="M50 90 V175"/></svg></div>`;
+  const LOADER = `<div class="pg-loader" id="ds-loader" role="img" aria-label="The Loop splash screen">${(window.PGLoop && window.PGLoop.svg) || ''}</div>`;
   const sec = (id, title, body) => `<section class="card ds-sec" id="ds-${id}"><h2 class="ds-h">${title}</h2>${body}</section>`;
 
   const View = {
@@ -78,9 +76,9 @@
 
         ${sec('motion', 'Motion — the splash screen', `<div class="ds-split"><div class="ds-loaderbox">${LOADER}<span class="label ds-loader__cap" id="ds-cap"></span>
           <div class="ds-loader__btns"><button type="button" class="btn" id="ds-fast">Fast load</button><button type="button" class="btn" id="ds-slow">Slow load</button></div></div>
-          <div class="ds-copy"><ol><li><b>The bowl forms.</b> A yellow light leads the pen around the bowl, then glides into the centre and becomes a yellow dot (≈1.3 s).</li>
-          <li><b>Still loading? The dot waits.</b> It pulses inside the open bowl; the G isn’t completed until the page is ready (8 s at most).</li>
-          <li><b>Loaded: the G completes, then the p.</b> The dot stretches out into the bar, the p tail grows from the bowl’s edge, and the splash fades.</li></ol>
+          <div class="ds-copy"><ol><li><b>The G forms.</b> A yellow light leads the pen around the bowl, then the yellow bar finishes the G (≈1.2 s).</li>
+          <li><b>Still loading? Into a dot, then the G again.</b> The G winds back into a yellow dot at its centre and forms again from there, as many times as it takes (8 s at most).</li>
+          <li><b>Loaded: the p forms.</b> The G stays complete, the p tail grows from the bowl’s edge, and the splash fades.</li></ol>
           <p class="ds-note">Plays on every page load and refresh. Reduced motion: the still mark, then a fade. Code: <code>assets/brand/loader.css</code> + <code>loader.js</code>.</p></div></div>`)}
 
         ${sec('assets', 'Assets', `<div class="ds-grid ds-grid--assets">${ASSETS.map(a => `<a class="ds-asset" href="${ROOT}${a[1]}" download="${a[1]}"><span class="ds-tile ds-tile--${a[2]}"><img src="${ROOT}${a[1]}" alt=""></span><span><b>${a[0]}</b><small>${a[1]} · SVG</small></span></a>`).join('')}
@@ -92,17 +90,17 @@
       View.play(2600);
       window.addEventListener('hashchange', View.stop, { once: true });
     },
-    stop() { View.timers.forEach(clearTimeout); View.timers = []; },
+    stop() { View.timers.forEach(clearTimeout); View.timers = []; if (View.halt) { View.halt(); View.halt = null; } },
     play(wait) {
       View.stop();
-      const l = $('#ds-loader'), cap = $('#ds-cap'); if (!l) return;
+      const l = $('#ds-loader'), cap = $('#ds-cap'); if (!l || !window.PGLoop) return;
       if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { l.className = 'pg-loader is-still'; cap.textContent = 'Reduced motion: still mark'; return; }
-      const t = (ms, f) => View.timers.push(setTimeout(f, ms));
-      l.className = 'pg-loader'; void l.offsetWidth;
-      l.classList.add('is-forming'); cap.textContent = '1 · The bowl forms';
-      t(1300, () => { if (wait) { l.classList.add('is-waiting'); cap.textContent = '2 · Still loading: the dot waits'; } });
-      t(1300 + wait, () => { l.classList.remove('is-waiting'); l.classList.add('is-finishing'); cap.textContent = (wait ? '3' : '2') + ' · Loaded: G completes, then the p'; });
-      t(1300 + wait + 1700, () => View.play(wait));
+      const start = Date.now();
+      cap.textContent = '1 · The G forms';
+      View.halt = window.PGLoop.animate(l, {
+        isLoaded: () => { const ok = Date.now() - start >= wait; cap.textContent = ok ? (wait ? '3' : '2') + ' · Loaded: the p forms' : '2 · Still loading: into a dot, then the G again'; return ok; },
+        onDone: () => View.timers.push(setTimeout(() => View.play(wait), 900)),
+      });
     },
   };
 
