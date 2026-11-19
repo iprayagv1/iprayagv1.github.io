@@ -1,4 +1,8 @@
-/* PG Loop page loader — the G forms, waits (yellow light circling) until the page has loaded, then the p tail grows. */
+/* PG Loop splash screen.
+   1 · The bowl of the G draws, a yellow light leading the pen; the light slides into the
+       centre of the G and becomes a yellow dot.
+   2 · Still loading? The dot pulses inside the open bowl. The G is not completed yet.
+   3 · Loaded: the dot stretches out into the bar (the G is complete), then the p tail grows. */
 html.pg-loading { background: #0b0b0b; }
 html.pg-loading body { visibility: hidden; }
 .pg-loader {
@@ -12,30 +16,37 @@ html.pg-loading body { visibility: hidden; }
 .pg-loader.is-done svg { transform: scale(.7); }
 .pg-loader path { fill: none; stroke-width: 14; stroke-linecap: round; }
 .pl-arc, .pl-up, .pl-down { stroke: #f3f3f3; }
-.pl-bar, .pl-tip, .pl-trail { stroke: #ffcd29; }
+.pl-bar, .pl-tip { stroke: #ffcd29; }
+.pl-dot { fill: #ffcd29; opacity: 0; transform-box: fill-box; transform-origin: center; }
 
-.pl-arc   { stroke-dasharray: 281; stroke-dashoffset: 281; }
-.pl-tip   { stroke-dasharray: 40 640; stroke-dashoffset: 40; }
-.pl-bar   { stroke-dasharray: 47; stroke-dashoffset: 47; }
-.pl-up    { stroke-dasharray: 46; stroke-dashoffset: 46; }
-.pl-down  { stroke-dasharray: 86; stroke-dashoffset: 86; }
-.pl-trail { stroke-dasharray: 44 400; opacity: 0; transition: opacity .3s ease; }
+.pl-arc  { stroke-dasharray: 281; stroke-dashoffset: 281; }
+.pl-tip  { stroke-dasharray: 40 700; stroke-dashoffset: 40; }
+.pl-bar  { stroke-dasharray: 47; stroke-dashoffset: 47; }
+.pl-up   { stroke-dasharray: 46; stroke-dashoffset: 46; }
+.pl-down { stroke-dasharray: 86; stroke-dashoffset: 86; }
 
-/* 1 · the G forms: bowl eases in, yellow light leads it, bar follows at the same speed */
-.is-forming .pl-arc { animation: plDraw 1.04s cubic-bezier(.4,0,.667,.5) forwards; }
-.is-forming .pl-tip { animation: plTip 1.2s forwards; }
-.is-forming .pl-bar { animation: plDraw .115s linear 1.04s forwards; }
-/* 2 · still loading: a yellow light keeps circling the G */
-.is-waiting .pl-trail { opacity: 1; animation: plTrail 1.3s linear infinite; }
-/* 3 · loaded: the p tail grows out of the bowl's edge, up and down at once */
-.is-finishing .pl-trail { opacity: 0; }
-.is-finishing .pl-up, .is-finishing .pl-down { animation: plDraw .49s cubic-bezier(.333,.5,.6,1) forwards; }
+/* 1 · bowl draws (eases in); the yellow light leads it, then glides into the centre and becomes the dot */
+.pg-loader.is-forming .pl-arc { animation: plDraw 1.04s cubic-bezier(.4,0,.667,.5) forwards; }
+.pg-loader.is-forming .pl-tip { animation: plTip 1.3s forwards; }
+.pg-loader.is-forming .pl-dot { animation: plShow .01s linear 1.28s forwards; }
+/* 2 · still loading: the dot breathes inside the open G */
+.pg-loader.is-waiting .pl-tip { opacity: 0; }
+.pg-loader.is-waiting .pl-dot { opacity: 1; animation: plPulse 1.1s ease-in-out infinite; }
+/* 3 · loaded: the dot stretches into the bar, then the p tail grows up and down from the bowl's edge */
+.pg-loader.is-finishing .pl-tip { opacity: 0; }
+.pg-loader.is-finishing .pl-dot { opacity: 1; animation: none; transform: none; }
+.pg-loader.is-finishing .pl-bar { animation: plDraw .26s cubic-bezier(.45,0,.55,1) forwards; }
+.pg-loader.is-finishing .pl-up, .pg-loader.is-finishing .pl-down { animation: plDraw .49s cubic-bezier(.333,.5,.6,1) .26s forwards; }
 
 @keyframes plDraw  { to { stroke-dashoffset: 0; } }
-@keyframes plTip   { 0% { stroke-dashoffset: 40; opacity: 1; animation-timing-function: cubic-bezier(.4,0,.667,.5); }
-                     86.7% { stroke-dashoffset: -241; opacity: 1; } 100% { stroke-dashoffset: -241; opacity: 0; } }
-@keyframes plTrail { from { stroke-dashoffset: 444; } to { stroke-dashoffset: 0; } }
+@keyframes plShow  { to { opacity: 1; } }
+@keyframes plTip {
+  0%   { stroke-dasharray: 40 700;   stroke-dashoffset: 40;   animation-timing-function: cubic-bezier(.4,0,.667,.5); }
+  80%  { stroke-dasharray: 40 700;   stroke-dashoffset: -241; animation-timing-function: cubic-bezier(.2,.6,.3,1); }
+  100% { stroke-dasharray: .01 700;  stroke-dashoffset: -327; }
+}
+@keyframes plPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.45); opacity: .55; } }
 
 /* Reduced motion: the still mark, then a quick fade */
 .pg-loader.is-still path { stroke-dashoffset: 0 !important; animation: none !important; }
-.pg-loader.is-still .pl-tip, .pg-loader.is-still .pl-trail { display: none; }
+.pg-loader.is-still .pl-tip, .pg-loader.is-still .pl-dot { display: none; }
