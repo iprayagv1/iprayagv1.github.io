@@ -82,7 +82,10 @@
           <p class="ds-note">Plays on every page load and refresh. Reduced motion: the still mark, then a fade. Code: <code>assets/brand/loader.css</code> + <code>loader.js</code>.</p></div></div>`)}
 
         ${sec('assets', 'Assets', `<div class="ds-grid ds-grid--assets">${ASSETS.map(a => `<a class="ds-asset" href="${ROOT}${a[1]}" download="${a[1]}"><span class="ds-tile ds-tile--${a[2]}"><img src="${ROOT}${a[1]}" alt=""></span><span><b>${a[0]}</b><small>${a[1]} · SVG</small></span></a>`).join('')}
-          <a class="ds-asset" href="${ROOT}icon-dark-1024.png" download="pg-icon-dark-1024.png"><span class="ds-tile ds-tile--plain"><img src="${ROOT}icon-dark-1024.png" alt=""></span><span><b>Avatar · PNG 1024</b><small>icon-dark-1024.png</small></span></a></div>`)}
+          <a class="ds-asset" href="${ROOT}icon-dark-1024.png" download="pg-icon-dark-1024.png"><span class="ds-tile ds-tile--plain"><img src="${ROOT}icon-dark-1024.png" alt=""></span><span><b>Avatar · PNG 1024</b><small>icon-dark-1024.png</small></span></a>
+          <a class="ds-asset" href="${ROOT}profile-loop.gif" download="pg-loop-profile.gif"><span class="ds-tile ds-tile--plain"><img src="${ROOT}profile-loop.gif" alt=""></span><span><b>Profile picture · animated GIF</b><small>profile-loop.gif · 800 × 800</small></span></a>
+          <a class="ds-asset" href="${ROOT}profile-loop.mp4" download="pg-loop-profile.mp4"><span class="ds-tile ds-tile--plain"><img src="${ROOT}profile-still.png" alt=""></span><span><b>Profile picture · MP4 video</b><small>profile-loop.mp4 · 800 × 800</small></span></a>
+          <a class="ds-asset" href="${ROOT}profile-still.png" download="pg-loop-profile-still.png"><span class="ds-tile ds-tile--plain"><img src="${ROOT}profile-still.png" alt=""></span><span><b>Profile picture · still PNG</b><small>profile-still.png · 800 × 800</small></span></a></div>`)}
       </div>`;
       main.querySelectorAll('.ds-toc a').forEach(a => a.onclick = e => { e.preventDefault(); const t = $('#ds-' + a.dataset.sec); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
       $('#ds-fast').onclick = () => View.play(0);
