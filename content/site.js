@@ -220,7 +220,7 @@ window.SITE = {
     "instagram": "https://www.instagram.com/prayagv1/",
     "resume": "",
     "reviewerForm": "https://forms.gle/E69Ri9PVbm77tHif6",
-    "resumeRequestApi": "https://script.google.com/macros/s/AKfycbykXsipZAmssldu_5tDGItxw8RT_X1U-YZVSDYk45cmiHhoY4KkyA-YwJsRNDIScGTl/exec"
+    "resumeRequestApi": "https://script.google.com/macros/s/AKfycbwHxFJa5seA48dJaArS5TZu6lck-FSyPZsZFSpQ9vxBdMIyHMzQM7tCFfOur6lSJdEXdA/exec"
   },
   "footer": {
     "name": "Prayag Gangadharan",
