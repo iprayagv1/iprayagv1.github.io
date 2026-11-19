@@ -147,7 +147,7 @@
   <link rel="icon" href="../assets/brand/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="../assets/brand/apple-touch-icon.png">
   <link rel="stylesheet" href="../assets/brand/loader.css?v=5">
-  <script src="../assets/brand/loader.js?v=5"></script>
+  <script src="../assets/brand/loader.js?v=6"></script>
   <link rel="stylesheet" href="../styles.css?v=11">
   <link rel="stylesheet" href="case.css?v=10">
 </head>

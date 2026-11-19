@@ -1,8 +1,8 @@
 /* PG Loop splash screen. Load in <head> (not deferred) together with loader.css.
    Runs on every page load and refresh:
    1 · The G forms: the bowl draws (a yellow light leading the pen), then the yellow bar.
-   2 · Still loading? The G winds back into a yellow dot at its centre, then forms again from
-       there — over and over until the page has loaded (8 s cap).
+   2 · Still loading? The G winds back into a yellow dot at its centre; the dot fades away as the
+       G forms again — over and over until the page has loaded (8 s cap).
    3 · Loaded: the G stays complete and the p tail grows, then the splash fades. */
 (function () {
   var DRAW = 1000, BAR = 220, BACK = 650, BARBACK = 200, REST = 350, TAIL = 490, HOLD = 300, FADE = 500, MAX_WAIT = 8000;
@@ -27,7 +27,9 @@
     function reset() {
       anims.forEach(function (a) { a.cancel(); }); anims = [];
     }
+    var dotShown = false;
     function form() {
+      if (dotShown) { run(dot, [{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: 'scale(.3)' }], { duration: 320, easing: 'cubic-bezier(.4,0,1,1)' }); dotShown = false; }
       dash(arc, 281, 0, DRAW, EASE);
       run(tip, [{ strokeDashoffset: 40, opacity: 1 }, { strokeDashoffset: -241, opacity: 1, offset: .92 }, { strokeDashoffset: -241, opacity: 0 }], { duration: DRAW, easing: EASE });
       dash(bar, 47, 0, BAR, 'linear', DRAW);
@@ -37,6 +39,7 @@
       dash(arc, 0, -281, BACK, 'cubic-bezier(.55,0,.75,.5)');
       dash(bar, 0, -47, BARBACK, 'cubic-bezier(.2,.6,.3,1)', BACK);
       run(dot, [{ opacity: 0, transform: 'scale(.6)' }, { opacity: 1, transform: 'scale(1.25)', offset: .6 }, { opacity: 1, transform: 'scale(1)' }], { duration: REST + 150, delay: BACK + BARBACK - 150 });
+      dotShown = true;
       later(BACK + BARBACK + REST, form);
     }
     function finish() {
