@@ -279,7 +279,7 @@
           <div class="side__brand"><a class="logo" href="#/dashboard" aria-label="Dashboard"><svg viewBox="15 22.5 170 170" aria-hidden="true" focusable="false"><path class="loop" d="M138.3 57.9 A50 50 0 1 0 150 90"/><path class="bar" d="M150 90 H104"/><path class="loop" d="M50 45 V175"/></svg></a><span class="chip">Admin</span></div>
           <nav id="nav"></nav>
           <div class="side__user">
-            <div class="who"><span class="avatar">${u.avatar_url ? `<img src="${esc(u.avatar_url)}" alt="">` : 'PG'}</span>
+            <div class="who"><span class="avatar"><img src="../assets/brand/profile-loop.gif" alt=""></span>
               <div><span>${esc(u.name || u.login)}</span><small>${PREVIEW && !GH.token ? 'Preview · not signed in' : 'Owner · @' + esc(u.login)}</small></div></div>
             <button class="signout" id="signout" type="button">${ic('out')}${PREVIEW && !GH.token ? 'Exit preview' : 'Sign out'}</button>
           </div>
